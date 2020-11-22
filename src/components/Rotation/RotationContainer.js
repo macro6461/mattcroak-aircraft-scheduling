@@ -4,9 +4,6 @@ import Rotation from './Rotation';
 const RotationContainer = () =>{
 
     const rotations = useSelector(state => state.rotations);
-    const inRotation = useSelector(state => state.inRotation);
-
-    console.log(rotations)
 
     return (
         <div className="rotation">

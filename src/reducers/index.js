@@ -2,7 +2,7 @@ export default function rootReducer(state={
     flights: [],
     aircrafts: [],
     rotations: [],
-    inRotation: [],
+    inRotation: {},
     rotationMap: {},
     selectedAircraft: null,
     offset: 0,
@@ -18,7 +18,8 @@ export default function rootReducer(state={
             return {...state}
         case "GET_AIRCRAFTS_SUCCESS":
             var {data} = action.payload
-            return {...state, aircrafts: data}
+            var selectedAircraft = data[0]
+            return {...state, aircrafts: data, selectedAircraft}
         case "GET_FLIGHTS_SUCCESS":
             var {data, pagination} = action.payload;
             var {offset, limit, total} = pagination;
@@ -33,23 +34,20 @@ export default function rootReducer(state={
         case "ADD_TO_ROTATION":
 
             var rotations = state.rotations.map(x=>x);
-            var inRotation = state.inRotation.map(x=>x);
+            var inRotation = Object.create(state.inRotation);
             rotations.push(action.payload);
-            inRotation.push(action.payload.id);
+            inRotation[action.payload.id] = true;
 
             return {...state, rotations, inRotation}
 
         case "REMOVE_FROM_ROTATION": 
+            var inRotation = Object.create(state.inRotation);
 
             var rotations = state.rotations.filter(rotation=>{
                 return rotation.id !== action.payload.id
             })
 
-            var inRotation = state.inRotation.map(x=>x)
-
-            var index = inRotation.indexOf(action.payload.id);
-
-            inRotation.splice(index, 1) 
+            delete inRotation[action.payload.id];
 
             return {...state, rotations, inRotation}
         default:

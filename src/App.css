@@ -12,7 +12,7 @@
 
 .leftRight{
   position: relative;
-  min-width: 300px;
+  min-width: 250px;
   height: 100%;
   margin: 0 10px 0 10px;
   color: #001f3d;
@@ -66,6 +66,9 @@
   display: flex;
   /* justify-content: space-evenly; */
   align-items: center;
+  border: solid 1px #001f3d;
+  margin-bottom: 5px;
+  width: 99%;
 }
 
 .item.rot > div{
@@ -83,4 +86,17 @@
   color: white;
   cursor: pointer;
   padding: 10px;
+}
+
+.flightInner{
+  display: flex;
+  justify-content: space-between;
+}
+
+.flightInner > div {
+  margin: 0 10px;
+}
+
+.flightInner p {
+  margin: 5px;
 }

@@ -1,6 +1,8 @@
-import '../App.css';
+import {useSelector} from 'react-redux';
 
-const Banner = ({flight}) =>{
+const Banner = () => {
+
+    const selectedAircraft = useSelector(state => state.selectedAircraft);
 
     return (
         <>
@@ -8,7 +10,7 @@ const Banner = ({flight}) =>{
                 <p>Aircrafts</p>
             </div>
             <div className="rotation banner"  >
-                <p>Rotation ABCDE</p>
+                <p>{selectedAircraft ? 'Rotation ' + selectedAircraft.ident : 'No Rotation Available'}</p>
                 <hr/>
             </div>
             <div className="leftRight banner" >
