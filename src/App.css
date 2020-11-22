@@ -50,6 +50,7 @@
   transition: all 0.3s;
   color: #001f3d;
   background-color: white;
+  position: relative;
 }
 
 .item:hover{
@@ -73,6 +74,12 @@
 
 .item.rot > div{
   width: 100%;
+  text-align: left;
+  margin-left: 10px;
+}
+
+.item.rot > div > p{
+  margin-left: 15px;
 }
 
 .pagination{
@@ -99,4 +106,15 @@
 
 .flightInner p {
   margin: 5px;
+}
+
+.flightMask{
+  background-color: white;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  opacity: 0.7;
+  cursor: not-allowed;
 }

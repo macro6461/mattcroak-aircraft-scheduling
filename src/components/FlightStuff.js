@@ -5,6 +5,7 @@ import Flights from './Flights/Flights';
 import Rotation from './Rotation/RotationContainer';
 import Aircrafts from './Aircrafts/Aircrafts';
 import Banner from './Banner';
+import DateControl from './DateControl';
 
 const FlightStuff = () => {
 
@@ -20,6 +21,7 @@ const FlightStuff = () => {
 
     return (
         <div>
+            <DateControl/>
             <div>
                 <Banner/>
             </div>

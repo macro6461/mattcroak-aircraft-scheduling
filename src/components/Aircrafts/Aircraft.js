@@ -8,18 +8,20 @@ const Aircraft = ({aircraft}) =>{
     } = aircraft;
 
     const selectedAircraft = useSelector(state=>state.selectedAircraft)
+    const usability = useSelector(state=>state.usability)
 
     const dispatch = useDispatch();
 
-    const handleClick = () =>{
+    const handleClick = () => {
         dispatch(selectAircraft(ident))
     };
 
     var className = selectedAircraft && selectedAircraft.ident !== ident ? 'item' : 'item chosen';
 
     return (
-        <div key={ident} className={className} onClick={handleClick}>
+        <div key={ident} className={className} onClick={handleClick} style={{borderBottom: className.indexOf('chosen') > -1 ? 'white' : '#001f3d'}}>
             <p>{ident}</p>
+            ({usability}%)
         </div>
     )
 };

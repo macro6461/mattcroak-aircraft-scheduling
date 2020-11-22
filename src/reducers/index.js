@@ -1,19 +1,42 @@
+const calcUsability = (rotations) =>{
+    var totalMins = 0;
+
+    rotations.forEach(x=> {
+        var timeInMins  = (x.arrivaltime - x.departuretime) / 60
+        //need to include turnaround
+        totalMins += timeInMins + 20
+    })
+
+    //mins in 24 hours = 1440
+    var x = (totalMins / 1440) * 100
+
+    return Math.round(x)
+};
+
+
 export default function rootReducer(state={
     flights: [],
     aircrafts: [],
     rotations: [],
     inRotation: {},
     rotationMap: {},
+    currentDate: null,
     selectedAircraft: null,
     offset: 0,
     limit: 25,
     prevOffset: 0,
-    total:0
+    total:0,
+    usability: 0
 }, action){
 
     switch(action.type){
         case "GET_AIRCRAFTS":
-            return {...state}
+             //initialize date with tomorrow's date
+             const today = new Date()
+             const tomorrow = new Date(today)
+             tomorrow.setDate(tomorrow.getDate() + 1)
+
+            return {...state, currentDate: tomorrow}
         case "GET_FLIGHTS":
             return {...state}
         case "GET_AIRCRAFTS_SUCCESS":
@@ -32,24 +55,41 @@ export default function rootReducer(state={
             var selectedAircraft = state.aircrafts.find(aircraft=>aircraft.ident === action.payload);
             return {...state, selectedAircraft}
         case "ADD_TO_ROTATION":
-
+            var rotation = action.payload;
+            rotation.date = state.currentDate;
+            var tempRotations = state.rotations.map(x=>x);
             var rotations = state.rotations.map(x=>x);
-            var inRotation = Object.create(state.inRotation);
-            rotations.push(action.payload);
-            inRotation[action.payload.id] = true;
 
-            return {...state, rotations, inRotation}
+            tempRotations.push(rotation);
+
+            var usability = calcUsability(tempRotations);
+
+            var inRotation = {...state.inRotation};
+
+            if (usability > 100){
+                alert('Adding this flight to the rotation will push aircraft usability beyond 100%. Cannot add to rotation.')
+            } else {
+                rotations.push(rotation);
+                inRotation[rotation.id] = true;
+            }
+
+            return {...state, rotations, inRotation, usability: usability > 100 ? state.usability : usability}
 
         case "REMOVE_FROM_ROTATION": 
-            var inRotation = Object.create(state.inRotation);
+            var newRotationObj = {}
+            var keys = Object.keys(state.inRotation).filter(x=>x !== action.payload.id)
 
             var rotations = state.rotations.filter(rotation=>{
                 return rotation.id !== action.payload.id
             })
 
-            delete inRotation[action.payload.id];
+            var usability = calcUsability(rotations);
 
-            return {...state, rotations, inRotation}
+            keys.forEach(x=>{
+                newRotationObj[x] = state.inRotation[x]
+            });
+
+            return {...state, rotations, inRotation: newRotationObj, usability}
         default:
             return state;
     }
