@@ -1,68 +1,81 @@
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
-## Available Scripts
+  
 
-In the project directory, you can run:
+# Matt Croak Aircraft Scheduling Code Challenge
 
-### `npm start`
+  
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The app is a react application that utilizes redux for the store and redux sagas as the middleware for the async API requests. The app utilizes fetch in order to make a GET request to the respective APIs for aircrafts and airlines.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+  
 
-### `npm test`
+## Aircrafts
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  
 
-### `npm run build`
+The user can select an aircraft from the aircraft panel. Currently only one is enabled but there is support for multiple. Once there is a selected aircraft (represented as `selectedAircraft` in the reducer) the user can begin selecting flights to assign to the rotation for that aircraft.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## Flights
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  
 
-### `npm run eject`
+For the pagination UX I decided on for the flights API, I went with navigation buttons at the bottom of the pane rather than a load more option which would append the newest items to the existing list. This choice was not easy but I decided that having navigation buttons would make the scroll in the flights panel less overwhelming and provide a more convenient means of navigation. Rather than having to scroll up or down almost a lot the most relevant flight options are consolidated into groups of 25. To see the previous options, click previous. To see the next 25, click next. From the available flights the user can select a flight to be added to an aircrafts rotation.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+  
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Rotation
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Selecting a flight for a rotation can be done by clicking a flight card in the flight panel. Once a flight is added, any flights that have a time that conflict with the selected on are disabled in the flights pane. Originally I enabled the user to drag and drop rotation items in the rotation list but this lead to flights potentially being moved out of order (you can't start a flight that departs at 12:00PM before a flight that departs at 10:00AM). It ended up being more efficient to just let the user remove items from the list as they saw fit rather than introducing a drag and drop that potentially created time conflicts.
 
-## Learn More
+  
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Timeline
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  
 
-### Code Splitting
+Once I was able to determine the scale for the flight times was in seconds (21600 === 6 hours, which represents 6:00AM on a 24 hour timeline) I was able to scale the timeline to fit 24 hours relatively smoothly. I made the timeline 720px wide. 720px / 24 hours leaves about 30px per hour (although I found a scale of 27px to be a more convenient fit for the service blocks and turnaround times). I was able to determine the position on the timeline by taking a flight's `departuretime`, divide it by 60 so the position would correspond to minutes on the timeline.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+  
 
-### Analyzing the Bundle Size
+```
+//function used to determine left positioning
+const calcPosition = (rotation) => {
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+	var left = (rotation.departuretime / 60) / 1.9
 
-### Making a Progressive Web App
+	//need to offset position. 
+	//Calculate offset by dividing left by 30 
+	//(approx width of an hour)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+	var offset = left / 30
+	left = left - offset
+	return left
+}
+```
+I'm still not sure why 1.9 worked but it did lead to a pretty accurate positioning coefficient to be used with the calculation. If you want to see how close the service blocks line up to their hour and minute position you can uncomment out the pipes within `p` tags in `Timeline.js`, starting on line 32.
 
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+```
+<div  style={{display:  'flex', justifyContent:  'space-between', position:  'relative'}}  className="tickers">
+	<p>00:00</p>
+	
+	{/* <p>|</p>
+	...
+	<p>|</p> */}
+	
+	<p>12:00</p>
+	
+	{/* <p>|</p>
+	<p>|</p>
+	...
+	<p>|</p> */}
+	
+	<p></p>
+...
+</div>
+```

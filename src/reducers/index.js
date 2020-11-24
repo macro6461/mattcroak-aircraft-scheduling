@@ -1,32 +1,4 @@
-const calcUsability = (rotations) =>{
-    var totalMins = 0;
-
-    rotations.forEach(x=> {
-        var timeInMins  = (x.arrivaltime - x.departuretime) / 60
-        //need to include turnaround
-        totalMins += timeInMins + 20
-    })
-
-    //mins in 24 hours = 1440
-    var x = (totalMins / 1440) * 100
-
-    return Math.round(x)
-};
-
-const handleDestinationMatch = (rotations) =>{
-    rotations.forEach((x, i)=>{
-        if (i >= 1){
-            var prevRotationDestination = rotations[i-1].destination
-            x.destMatch = prevRotationDestination === x.origin
-        } else {
-            x.destMatch = true
-        }
-    })
-
-    return rotations
-}
-
-
+import {calcUsability, handleDestinationMatch, genReadableDate} from '../utils.js';
 export default function rootReducer(state={
     flights: [],
     aircrafts: [],
@@ -34,6 +6,7 @@ export default function rootReducer(state={
     inRotation: {},
     rotationMap: {},
     currentDate: null,
+    currentDateNotReadable: null,
     selectedAircraft: null,
     offset: 0,
     limit: 25,
@@ -47,10 +20,12 @@ export default function rootReducer(state={
         case "GET_AIRCRAFTS":
              //initialize date with tomorrow's date
              const today = new Date()
-             const tomorrow = new Date(today)
-             tomorrow.setDate(tomorrow.getDate() + 1)
+             const currentDateNotReadable = new Date(today)
+             currentDateNotReadable.setDate(currentDateNotReadable.getDate() + 1)
 
-            return {...state, currentDate: tomorrow}
+             var currentDate = genReadableDate(currentDateNotReadable)
+
+            return {...state, currentDate, currentDateNotReadable}
         case "GET_FLIGHTS":
             return {...state}
         case "GET_AIRCRAFTS_SUCCESS":
@@ -74,10 +49,13 @@ export default function rootReducer(state={
             return {...state, flights: data, offset, limit, prevOffset, total, isTheEnd}
         case "SELECT_AIRCRAFT":
             var selectedAircraft = state.aircrafts.find(aircraft=>aircraft.ident === action.payload);
+
             return {...state, selectedAircraft}
         case "ADD_TO_ROTATION":
             var rotation = action.payload;
             rotation.date = state.currentDate;
+            rotation.aircraft = state.selectedAircraft.ident;
+
             var tempRotations = state.rotations.map(x=>x);
             var rotations = state.rotations.map(x=>x);
 

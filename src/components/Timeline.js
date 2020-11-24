@@ -27,7 +27,7 @@ const Timeline = () =>{
     return (
         <div style={{display: 'block', margin: 'auto', overflowX: 'auto'}}>
             <div>
-                <div style={{display: 'flex', justifyContent: 'space-between', position: 'relative'}} className="tickers">
+                <div className="tickers">
                 <p>00:00</p>
                 {/* <p>|</p>
                 <p>|</p>
@@ -57,18 +57,13 @@ const Timeline = () =>{
             </div>
             <div style={{height: 50, position: 'relative'}}>
                 {times.map(x=>{
-                    return <><p style={{ position: 'absolute',
-                        backgroundColor: 'green',
-                        top: -18,
+                    return <>
+                    <p className="serviceBlock" style={{
                         left: x.left,
-                        height: 23,
-                        width: x.width}}/>
-                        <p style={{position: 'absolute',
-                        backgroundColor: 'purple',
-                        top: -18,
-                        left: x.left + x.width,
-                        height: 23,
-                        width: 9}}/></>
+                        width: x.width
+                        }}/>
+                        <p className="turnaroundBlock" style={{left: x.left + x.width}}/>
+                        </>
                 })}
                <div style={{backgroundColor: 'grey', width: '100%', height: 20}}/>
             </div>

@@ -119,6 +119,12 @@
   cursor: not-allowed;
 }
 
+.tickers{
+  display: flex; 
+  justify-content: space-between;
+  position: relative;
+}
+
 .tickerLine{
   width: 99.5%;
   height: 5px;
@@ -126,6 +132,18 @@
   position: absolute;
   bottom: 8px;
   border-bottom: none;
+}
+
+.serviceBlock, .turnaroundBlock{
+  position: absolute;
+  background-color: green;
+  top: -18px;
+  height: 23px;
+}
+
+.turnaroundBlock{
+  background-color: purple;
+  width: 9px;
 }
 
 .tooltip {
