@@ -33,3 +33,7 @@ export function addToRotation(payload) {
 export function removeFromRotation(payload) {
     return { type: "REMOVE_FROM_ROTATION", payload }
 };
+
+export function sortRotation(payload) {
+    return { type: "SORT_ROTATION", payload }
+};

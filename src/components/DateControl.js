@@ -45,7 +45,7 @@ const DateControl = () =>{
     }
 
     return (
-        <div style={{alignItems: 'center'}}>
+        <div className="flexed" style={{alignItems: 'center'}}>
             <FaAngleLeft onClick={onPrevDate}/>
             {currentDate 
                 ? <p>{currentDate.getDate()}{getOrdinal()} {months[currentDate.getMonth()]} {currentDate.getFullYear()}</p>

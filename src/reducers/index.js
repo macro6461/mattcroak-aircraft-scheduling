@@ -13,6 +13,19 @@ const calcUsability = (rotations) =>{
     return Math.round(x)
 };
 
+const handleDestinationMatch = (rotations) =>{
+    rotations.forEach((x, i)=>{
+        if (i >= 1){
+            var prevRotationDestination = rotations[i-1].destination
+            x.destMatch = prevRotationDestination === x.origin
+        } else {
+            x.destMatch = true
+        }
+    })
+
+    return rotations
+}
+
 
 export default function rootReducer(state={
     flights: [],
@@ -25,6 +38,7 @@ export default function rootReducer(state={
     offset: 0,
     limit: 25,
     prevOffset: 0,
+    isTheEnd: false,
     total:0,
     usability: 0
 }, action){
@@ -45,12 +59,19 @@ export default function rootReducer(state={
             return {...state, aircrafts: data, selectedAircraft}
         case "GET_FLIGHTS_SUCCESS":
             var {data, pagination} = action.payload;
+           
             var {offset, limit, total} = pagination;
-            var prevOffset = offset - 25;
-            offset = total > offset + 25 ? offset + 25 : offset;
+    
+            var prevOffset = offset - limit;
             prevOffset = prevOffset < 0 ? 0 : prevOffset;
 
-            return {...state, flights: data, offset, limit, prevOffset, total}
+            var isTheEnd = false;
+
+            if (total <= offset + data.length){
+                isTheEnd = true
+            }
+
+            return {...state, flights: data, offset, limit, prevOffset, total, isTheEnd}
         case "SELECT_AIRCRAFT":
             var selectedAircraft = state.aircrafts.find(aircraft=>aircraft.ident === action.payload);
             return {...state, selectedAircraft}
@@ -73,6 +94,8 @@ export default function rootReducer(state={
                 inRotation[rotation.id] = true;
             }
 
+            rotations = handleDestinationMatch(rotations)
+
             return {...state, rotations, inRotation, usability: usability > 100 ? state.usability : usability}
 
         case "REMOVE_FROM_ROTATION": 
@@ -89,7 +112,13 @@ export default function rootReducer(state={
                 newRotationObj[x] = state.inRotation[x]
             });
 
+            rotations = handleDestinationMatch(rotations)
+
             return {...state, rotations, inRotation: newRotationObj, usability}
+            case "SORT_ROTATION":
+                var rotations = action.payload;
+                rotations = handleDestinationMatch(rotations)
+                return {...state, rotations}
         default:
             return state;
     }

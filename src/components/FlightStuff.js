@@ -1,11 +1,12 @@
 import {useEffect} from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import {getAircrafts, getFlights} from '../actions/index';
+import {getAircrafts, getFlights, sortRotation} from '../actions/index';
 import Flights from './Flights/Flights';
-import Rotation from './Rotation/RotationContainer';
+import RotationContainer from './Rotation/RotationContainer';
 import Aircrafts from './Aircrafts/Aircrafts';
 import Banner from './Banner';
 import DateControl from './DateControl';
+import Timeline from './Timeline';
 
 const FlightStuff = () => {
 
@@ -22,13 +23,16 @@ const FlightStuff = () => {
     return (
         <div>
             <DateControl/>
-            <div>
+            <div className="flexed">
                 <Banner/>
             </div>
-            <div className="flightStuff">
+            <div className="flexed flightStuff">
                 <Aircrafts/>
-                <Rotation/>
+                <RotationContainer/>
                 <Flights/>
+            </div>
+            <div style={{width: 720, display: 'block', margin: 'auto', overflow: 'auto'}}>
+                <Timeline/>
             </div>
         </div>
     );

@@ -25,14 +25,13 @@ const Flight = ({flight}) =>{
 
     var isEligible = true
 
-    var finalRotationItem = rotations[rotations.length - 1]
-
-    if (!inRotation[id] && finalRotationItem){
-        if (finalRotationItem.destination !== origin){
-            isEligible = false
-        } else if (finalRotationItem.arrivaltime + 1200 > departuretime) {
-             //1200 20 mins times 60 seconds. Check if arrival time plus 20 mins is after departure time. 
-            isEligible = false
+    if (!inRotation[id]){
+        for (var i = 0; i < rotations.length; ++i){
+              //1200 20 mins times 60 seconds. Check if arrival time plus 20 mins is after departure time. 
+            if (rotations[i].arrivaltime + 1200 > departuretime){
+                isEligible = false
+                break
+            }
         }
     }
 

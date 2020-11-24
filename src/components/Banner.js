@@ -1,4 +1,6 @@
 import {useSelector} from 'react-redux';
+import { FaPlaneDeparture, FaClock,FaMapMarkedAlt } from 'react-icons/fa';
+
 
 const Banner = () => {
 
@@ -7,14 +9,14 @@ const Banner = () => {
     return (
         <>
             <div className="leftRight banner">
-                <p>Aircrafts</p>
+                <p>Aircrafts <FaPlaneDeparture/></p>
             </div>
             <div className="rotation banner"  >
-                <p>{selectedAircraft ? 'Rotation ' + selectedAircraft.ident : 'No Rotation Available'}</p>
+                <p>{selectedAircraft ? 'Rotation ' + selectedAircraft.ident : 'No Rotation Available'} <FaClock/></p>
                 <hr/>
             </div>
             <div className="leftRight banner" >
-                <p>Flights</p>
+                <p>Flights <FaMapMarkedAlt/></p>
             </div>
         </>
     )
